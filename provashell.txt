@@ -1,0 +1,183 @@
+#!/bin/bash
+#script agenda, exercicio de shell
+
+nomes=()
+telefones=()
+sair_case="nao"
+until [ $sair_case = "sim" ];
+do
+#exibir menu principal
+
+clear
+echo " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "
+echo " ~~ !!BEM VINDO A AGENDA!! ~~ "
+echo " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "
+
+echo " Escolha uma das opções abaixo.. "
+echo 
+echo " [1] cadastrar contato "
+echo " [2] buscar contato "
+echo " [3] listar contato "
+echo " [4] sair "
+
+read opcao
+
+case $opcao in 
+	1) #até que a variavel  sair_cadastro seja nao ira permanecer no loop
+	sair_cadastro="nao"
+	until [ $sair_cadastro = "sim" ];
+	do      #menu de cadastro
+		clear
+		echo " ################################ "
+		echo " # area de cadastro de contatos # "
+		echo " ################################ "
+		echo
+		echo "ecolha uma das opções a seguir"
+		echo
+		echo  " [1] cadastrar um contato  "
+		echo  " [2] sair " 
+		read cadastro 
+
+		if [ $cadastro -eq 1 ];
+		then   #enquanto a variavel saida for não ira permanecer no loop
+			saida="nao"
+			while [ $saida = "nao" ];
+			do
+				echo "digite o nome do contato"
+				read nome
+				echo "digite o telefone do contato"
+				read telefone 
+				#testando se as variaveis são vazias 
+ 				if [ -z $nome ] || [ -z $telefone ];
+				then 
+					echo "os valores digitados são invalidos"
+				#recebendo os nomes e telefones cadastrados e adicionando a lista
+				else
+					nomes+=( "$nome" )
+					telefones+=( "$telefone" )
+					saida="sim"
+					echo " ### cadastro realizado com sucesso! ### "
+					sleep 1
+				fi
+			done
+		elif [ $cadastro -eq 2 ];
+		then
+			sair_cadastro="sim"
+
+		else 
+			clear
+			echo " escaolha uma das opções "
+			echo 
+		fi
+	done ;;
+
+	2)
+	sairbusca="nao"
+	until [ $sairbusca = "sim" ];
+	do
+		echo " ### voce esta na busca de contatos ### "
+		echo
+		echo "[1] buscar por nome "
+		echo "[2] buscar por telefone"
+		echo "[3] sair"
+		echo -n "escolha uma das opções acima"
+		read busca
+
+		nomeachado="vazio"
+		foneachado="vazio"
+		if [ $busca -eq 1 ];
+		then 
+			echo -n "digite o nome desejado para busca:"
+			read nomebusca
+			for (( count = 0; count <= ${#nomes[@]}; count++ ));
+			do
+				if [ "$nomebusca" = "${nomes[count]}" ];
+				then
+					nomeachado=${nomes[count]}
+					foneachado=${telefones[count]}
+				fi
+			done
+			if [ $nomeachado = "vazio" ] && [ $foneachado = "vazio" ];
+			then
+				echo "contato não existe na lista"
+				echo
+				sleep 1
+			else
+				echo "### contato emcontrado ###"
+				echo "contato:"  $nomeachado
+				echo "telefone:" $foneachado
+				echo
+				sleep 1
+			fi
+		elif [ $busca -eq 2 ];
+		then
+			echo -n "digite um numero de telefone para busca"
+			read fonebusca
+			for (( count = 0; count <= ${#telefones[@]}; count++ ));
+			do
+				if [ "$fonebusca" = "${telefones[count]}" ];
+				then
+					nomeachado=${nomes[count]}
+					foneachado=${telefones[count]}
+				fi
+			done
+			if [ $nomeachado = "vazio" ] && [$foneachado = "vazio" ];
+			then 
+				echo "contato não existente na lista"
+				echo
+				sleep 1
+			else
+				echo "contato encontrado"
+				echo $nomeachado
+				echo $foneachado
+				echo
+				sleep 1
+			fi
+		elif [ $busca -eq 3 ]
+		then 
+			sairbusca="sim"
+		else
+			echo "opção invalida escolha uma das opções abaixo para continuar"
+			echo
+			sleep 1
+		fi
+	done ;;
+
+	3)
+	sairlistagem="nao"
+	until [ $sairlistagem = "sim" ];
+	do
+		echo "###voce está na lista de contatos### "
+		echo
+		echo "[1] listar os contatos"
+		echo "[2] sair"
+		read listaopcao
+
+		if [ $listaopcao -eq 1 ];
+		then
+			count=0
+			for contato in ${nomes[*]};
+			do
+				echo
+				echo $contato
+				echo ${telefones[count]}
+				(( count+=1 ))
+			done
+			echo
+		elif [ $listaopcao -eq 2 ]
+		then 
+			sairlistagem="sim"
+		else
+			echo "opçao invalida"
+		fi
+	done ;;
+
+	4)
+		sair_case="sim";;
+esac
+done
+ 
+
+
+
+
